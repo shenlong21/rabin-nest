@@ -24,17 +24,20 @@
     if (isset($_FILES['image']['name'])) {
         $saveto = "static/profiles/$user.jpg";
 
+        if (file_exists("static\profiles\\$user.jpg")){
+            unlink("static\profiles\\$user.jpg");
+        }
         move_uploaded_file($_FILES['image']['tmp_name'], $saveto);
         $typeok = TRUE;
         switch($_FILES['image']['type'])
         {
             case "image/gif": $src = imagecreatefromgif($saveto); break;
             case "image/jpeg": // Both regular and progressive jpegs
+            case "image/jpg": // Both regular and progressive jpegs
             case "image/pjpeg": $src = imagecreatefromjpeg($saveto); break;
             case "image/png": $src = imagecreatefrompng($saveto); break;
             default: $typeok = FALSE; break;
         }
-        
         if ($typeok) {
             list($w, $h) = getimagesize($saveto);
             $max = 500;
@@ -66,7 +69,6 @@
 <div class="row">
     <div class="col m6 s12">
         <p class="flow-text">Update Profile</p>
-        
         <div class="row">
 
             <form data-ajax='false' method='post' action='profile.php' enctype='multipart/form-data' col="col s12">
